@@ -16,13 +16,13 @@
 
 
 ""CONTROL""
-P	: Pause and Unpause the simulation.
-Q	: Quit the simulation.
-N	: Stop the current generation and create the next generation.
-O	: Toggle between showing all the alive snakes or showing just one snake.
-Up, Down: Change the selected snake (the neural network and other information shown related to the 		selected snake will change)
-W	: Increase the growth rate for snakes (To get longer snakes faster)
-D	: Decrease the growth rate for snakes (Minimun is 1)
+- P	: Pause and Unpause the simulation.
+- Q	: Quit the simulation.
+- N	: Stop the current generation and create the next generation.
+- O	: Toggle between showing all the alive snakes or showing just one snake.
+- Up, Down: Change the selected snake (the neural network and other information shown related to the 		selected snake will change)
+- W	: Increase the growth rate for snakes (To get longer snakes faster)
+- D	: Decrease the growth rate for snakes (Minimun is 1)
 
 
 
