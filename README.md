@@ -32,4 +32,24 @@
 - D	: Decrease the growth rate for snakes (Minimun is 1)
 
 
+### Note
+
+*It is possible to change the parameters of the environmetn in the Vars.py file.*
+
+## Installing and Testing:
+
+Clone the repository and install other requirements:
+```
+git clone https://github.com/GhadeerElmkaiel/Snakes-Evolution.git
+cd Snakes-Evolution;
+pip install -r requirements.txt
+```
+
+Run the environment
+```
+python main.py
+```
+
+
+
 
