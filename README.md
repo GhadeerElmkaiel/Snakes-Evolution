@@ -4,7 +4,9 @@
 
 - This is a simulation for natural selection process.
 - The main idea of the simulation is to create a random initial population of snakes, each snake has a different random color and random name.
+
 ![Alt text](images/start.png?raw=true "Starting")
+
 - with each generation the performance of the snakes should improve because the new generation is created using the best snakes of the last generation.
 - The creation of the new generation is done be getting a snake of the last generation and imitate its brain with some changes.
 - The process of selecting the parent of any snake is by random process, with the chances of selecting any snake depends on its performance.
@@ -17,6 +19,8 @@
 - During the simulation the neural network of one snake (by defult the best snake of the last generation) is shown, with the inputs and outputs calculated and drawn in the real-time, in addition to that, more information about this snake, and more general information are shown to the right of the screen.
 - The selected snake can be changed manually, accordingly, the shown neural network and other information change.
 
+
+![Alt text](images/snakes.png?raw=true "Evolution")
 
 ## CONTROLS
 - P	: Pause and Unpause the simulation.
