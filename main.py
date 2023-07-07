@@ -21,6 +21,9 @@ clock = pygame.time.Clock()
 gameDisplay = pygame.display.set_mode(fullWinDimentions)
 pygame.display.set_caption('Snake')
 
+appleImage = pygame.image.load(pathToAppleImage).convert_alpha()
+appleImage = pygame.transform.scale(appleImage, (blockSize, blockSize))
+
 # Create a folder for this simulation
 startTime=int(time.time()%100000000)
 create_folder("./TestGens/"+str(startTime)+"/")
@@ -61,10 +64,10 @@ class control_panel():
 		self.startPos = [playingWinWidth	 + 2*playingWinPos, playingWinPos]
 		self.width = fullWinWidth - 3 * playingWinPos - playingWinWidth
 		self.hieght = fullWinHieght - 2* playingWinPos
-		self.color = darkGray
+		self.color = np.array(darkGray)
 		self.edge = playingWinPos
-		self.horizontalMargin = 75
-		self.verticalMargin = 35
+		self.horizontalMargin = horizontalMargin
+		self.verticalMargin = verticalMargin
 		
 
 		if snake == None:
@@ -94,35 +97,57 @@ class control_panel():
 			message_to_screen_corner(("Num                         : " + str(idOfShownSnake)),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 3*self.verticalMargin],white,25)
 			message_to_screen_corner(("Score                       : " + str(snake.score)),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 4*self.verticalMargin],white,25)
 			message_to_screen_corner(("GrandFather ID        : " + str(snake.rootID)),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 5*self.verticalMargin],white,25)
-			message_to_screen_corner(("Born in Generation : " + str(snake.bornGen)),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 6*self.verticalMargin],white,25)
+			# message_to_screen_corner(("Born in Generation : " + str(snake.bornGen)),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 6*self.verticalMargin],white,25)
+			message_to_screen_corner(("Born in Generation : " + str(snake.bornGen)),[self.infoBlockPos[0] + self.edge, self.infoBlockPos[1]+self.edge + 5*self.verticalMargin],white,25)
 		else:
 			message_to_screen_corner(("Showing Snake    : All"),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 2*self.verticalMargin],white,25)
 			message_to_screen_corner(("Num                         : None"),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 3*self.verticalMargin],white,25)
 			message_to_screen_corner(("Score                       : None"),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 4*self.verticalMargin],white,25)
 			message_to_screen_corner(("GrandFather ID        : None"),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 5*self.verticalMargin],white,25)
-			message_to_screen_corner(("Born in Generation : None"),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 6*self.verticalMargin],white,25)
+			# message_to_screen_corner(("Born in Generation : None"),[self.infoBlockPos[0] + self.width/2 +self.edge, self.infoBlockPos[1]+self.edge + 6*self.verticalMargin],white,25)
+			message_to_screen_corner(("Born in Generation : None"),[self.infoBlockPos[0] +self.edge, self.infoBlockPos[1]+self.edge + 5*self.verticalMargin],white,25)
 
 
 	def draw_brain(self,snake):
 		pygame.draw.rect(self.display, self.color,(self.startPos[0], self.startPos[1], self.width, self.hieght))
 		messages = []
-		messages.append("U_W: " + str(snake.disToWallUp))
-		messages.append("R_W: " + str(snake.disToWallDown))
-		messages.append("D_W: " + str(snake.disToWallRight))
-		messages.append("L_W: " + str(snake.disToWallLeft))
+		# messages.append("U_W: " + str(snake.disToWallUp))
+		# messages.append("R_W: " + str(snake.disToWallDown))
+		# messages.append("D_W: " + str(snake.disToWallRight))
+		# messages.append("L_W: " + str(snake.disToWallLeft))
 
-		messages.append("X_A: " + str(snake.disToAppleX))
-		messages.append("Y_A: " + str(snake.disToAppleY))
+		# messages.append("X_A: " + str(snake.disToAppleX))
+		# messages.append("Y_A: " + str(snake.disToAppleY))
 
-		messages.append("U_C: " + str(snake.disToCellUp))
-		messages.append("R_C: " + str(snake.disToCellDown))
-		messages.append("D_C: " + str(snake.disToCellRight))
-		messages.append("L_C: " + str(snake.disToCellLeft))
+		# messages.append("U_C: " + str(snake.disToCellUp))
+		# messages.append("R_C: " + str(snake.disToCellDown))
+		# messages.append("D_C: " + str(snake.disToCellRight))
+		# messages.append("L_C: " + str(snake.disToCellLeft))
+
+		messages.append("U_W: " + "{:.3f}".format(snake.disToWallUp))
+		messages.append("R_W: " + "{:.3f}".format(snake.disToWallDown))
+		messages.append("D_W: " + "{:.3f}".format(snake.disToWallRight))
+		messages.append("L_W: " + "{:.3f}".format(snake.disToWallLeft))
+
+		messages.append("X_A: " + "{:.3f}".format(snake.disToAppleX))
+		messages.append("Y_A: " + "{:.3f}".format(snake.disToAppleY))
+
+		messages.append("U_C: " + "{:.3f}".format(snake.disToCellUp))
+		messages.append("R_C: " + "{:.3f}".format(snake.disToCellDown))
+		messages.append("D_C: " + "{:.3f}".format(snake.disToCellRight))
+		messages.append("L_C: " + "{:.3f}".format(snake.disToCellLeft))
+
+		if useMidAndLastCells:
+			messages.append("MC_X: " + "{:.3f}".format(snake.disToMidCellX))
+			messages.append("MC_Y: " + "{:.3f}".format(snake.disToMidCellY))
+			messages.append("LC_X: " + "{:.3f}".format(snake.disToLastCellX))
+			messages.append("LC_Y: " + "{:.3f}".format(snake.disToLastCellY))
+
 		messages.append("C__: 1")
 		#message_to_screen_corner("U_W: " + str(round(snake.disToWallUp,2)), (playingWinWidth + 3*playingWinPos , 2*playingWinPos), white, 25)
 		#message_to_screen_corner("R_W: " + str(round(snake.disToWallRight,2)), (playingWinWidth + 3*playingWinPos, 4*playingWinPos), white, 25)
 		for i ,msg in enumerate(messages):
-			message_to_screen_corner(msg,(self.startPos[0]+self.edge, self.startPos[1]+self.edge + i*self.verticalMargin),white, 20)
+			message_to_screen_corner(msg,(self.startPos[0]+self.edge-9, self.startPos[1]+self.edge + i*self.verticalMargin),white, 20)
 		for i in range(len(snake.brain.connections)):
 			#print(len(snake.brain.layers[i]))
 			#print(len(neural_pos[i]))
@@ -140,7 +165,9 @@ class control_panel():
 			#print(len(snake.brain.layers[i]))
 			#print(len(neural_pos[i]))
 			for j in range(len(snake.brain.layers[i])):
-				circle(self.neural_pos[i][j], calc_neuron_color(snake.brain.layers[i][j]))
+				neuronColor = calc_neuron_color(snake.brain.layers[i][j])
+				circle(self.neural_pos[i][j], (min(neuronColor[0]*1.5,255), min(neuronColor[1]*1.5,255),min(neuronColor[2]*1.5,255)), R=neuronSize+1)
+				circle(self.neural_pos[i][j], neuronColor , R=neuronSize)
 
 	def calc_neural_newtwork_pos(self):
 		self.neural_pos = []
@@ -175,11 +202,13 @@ class apple():
 	
 	"""
 	def __init__(self):
-		self.Pos = [int(random.randrange(0, playingWinWidth- blockSize)/10)*10, int(random.randrange(0, playingWinHieght- blockSize)/10)*10]
+		# self.Pos = [int(random.randrange(0, playingWinWidth- blockSize)/10)*10, int(random.randrange(0, playingWinHieght- blockSize)/10)*10]
+		self.Pos = [int(random.randrange(0, playingWinWidth- blockSize)/blockSize)*blockSize, int(random.randrange(0, playingWinHieght- blockSize)/blockSize)*blockSize]
 
 	def draw(self):
-		rect([playingWinPos+self.Pos[0], playingWinPos+ self.Pos[1], blockSize, blockSize], black)
-		rect([playingWinPos+self.Pos[0]+1, playingWinPos+ self.Pos[1]+1, blockSize-2, blockSize-2], red)
+		gameDisplay.blit(appleImage, [playingWinPos+self.Pos[0], playingWinPos+self.Pos[1]])
+		# rect([playingWinPos+self.Pos[0], playingWinPos+ self.Pos[1], blockSize, blockSize], black)
+		# rect([playingWinPos+self.Pos[0]+1, playingWinPos+ self.Pos[1]+1, blockSize-2, blockSize-2], red)
 
 gameApples = []
 for i in range(maxApplesNum):
@@ -241,7 +270,7 @@ class brain():
 					self.connections[i].append([])
 					for k in range(self.layersNum[i]+1):
 						self.connections[i][j].append(self.copyBrain[i][j][k])
-			self.connections = np.array(self.connections)
+			self.connections = np.array(self.connections, dtype=object)
 			self.imitate()
 		else:
 			for i in range(len(self.layersNum) -1):
@@ -250,7 +279,7 @@ class brain():
 					self.connections[i].append([])
 					for k in range(self.layersNum[i]+1):
 						self.connections[i][j].append(random.random()*2-1)
-			self.connections = np.array(self.connections)
+			self.connections = np.array(self.connections, dtype=object)
 
 
 	def activate(self, num, activationFunc='relu'):
@@ -303,7 +332,7 @@ class brain():
 				newConnections[i].append([])
 				for k in range(len(self.connections[i][j])):
 					newConnections[i][j].append(self.connections[i][j][k])
-		newConnections = np.array(newConnections)
+		newConnections = np.array(newConnections, dtype=object)
 		return newConnections
 
 
@@ -319,28 +348,31 @@ class snake():
 		brainToCopy=[]
 		self.numFitToCount = 5
 		self.fitnessSum=0
-		self.lastNfitToCount = []
-		for i in range(self.numFitToCount):
-			self.lastNfitToCount.append(0)
+		self.lastNfitToCount = np.array([0 for _ in range(self.numFitToCount)])
+		# for i in range(self.numFitToCount):
+		# 	self.lastNfitToCount.append(0)
 
 		if snakeToCopy:
 			brainToCopy = snakeToCopy.brain.connections
-			self.color=snakeToCopy.color
+			self.color=snakeToCopy.color.copy()
 			self.rootID = snakeToCopy.rootID
 			self.name = snakeToCopy.name
 			self.change_name()
-			r=random.randrange(3)
-			if r ==3:
-				for i in range(3):
-					r1=random.randrange(21)-10
-					r1=self.color[i] + r1
+			# r=random.randrange(2)
+			# if r ==1:
+			for i in range(3):
+				r0 = random.randrange(3)
+				if r0<1:
+					r=random.randrange(colorShiftRate+1)-int(colorShiftRate/2)
+					r1=self.color[i] + r
 					r1 = max(0,r1)
 					r1 = min(255,r1)
 					self.color[i]=r1
-					self.fitnessSum	 = snakeToCopy.fitnessSum
-					self.lastNfitToCount = snakeToCopy.lastNfitToCount
+
+			self.fitnessSum	 = snakeToCopy.fitnessSum
+			self.lastNfitToCount = snakeToCopy.lastNfitToCount.copy()
 		else:
-			self.color = (random.randrange(256),random.randrange(256),random.randrange(256))
+			self.color = np.array([random.randrange(256),random.randrange(256),random.randrange(256)])
 			self.rootID = snakeRootID
 			globals()["snakeRootID"] +=1
 			self.get_name()
@@ -350,7 +382,9 @@ class snake():
 		self.XSpeed = mainSpeed
 		self.YSpeed = 0
 		self.minLength = 1
-		self.dir = [1, 0]
+		# self.dir = [1, 0]
+		self.dir = "Up"
+		self.nextDir = "Up"
 		allowedRepetition = 5
 		numOfMovesToCheckRepetition = 20
 		self.reset_values()
@@ -365,6 +399,11 @@ class snake():
 		self.disToCellLeft = 1
 		self.disToCellRight = 1
 
+		self.disToMidCellX = 1
+		self.disToMidCellY = 1
+		self.disToLastCellX = 1
+		self.disToLastCellY = 1
+
 		self.disToAppleX = 1
 		self.disToAppleY = 1
 		self.bestScore = 0
@@ -377,6 +416,7 @@ class snake():
 		self.lastNMoves = []
 		self.score = 0
 		self.cells = [self.Pos]
+		self.breviousCellPos = []
 		self.canMove = True
 		self.numOfMoves = 0
 		self.fitness = 0
@@ -388,36 +428,48 @@ class snake():
 
 
 	def calc_info(self):
-		self.disToWallRight = (playingWinWidth - self.Pos[0] - blockSize)#/playingWinWidth
-		self.disToWallLeft = self.Pos[0]#/playingWinWidth
-		self.disToWallDown = (playingWinHieght - self.Pos[1] - blockSize)#/playingWinHieght
-		self.disToWallUp = self.Pos[1]#/playingWinHieght
+		self.disToWallRight = (playingWinWidth - self.Pos[0] - blockSize)/playingWinWidth
+		self.disToWallLeft = self.Pos[0]/playingWinWidth
+		self.disToWallDown = (playingWinHieght - self.Pos[1] - blockSize)/playingWinHieght
+		self.disToWallUp = self.Pos[1]/playingWinHieght
 
-		self.disToAppleX = (gameApples[self.score].Pos[0] - self.Pos[0])#/playingWinWidth
-		self.disToAppleY = (gameApples[self.score].Pos[1] - self.Pos[1])#/playingWinHieght
+		self.disToAppleX = (gameApples[self.score].Pos[0] - self.Pos[0])/playingWinWidth
+		self.disToAppleY = (gameApples[self.score].Pos[1] - self.Pos[1])/playingWinHieght
 
-		self.disToCellUp = playingWinHieght
-		self.disToCellDown = playingWinHieght
-		self.disToCellLeft = playingWinWidth
-		self.disToCellRight = playingWinWidth
+		self.disToCellUp = 1.0
+		self.disToCellDown = 1.0
+		self.disToCellLeft = 1.0
+		self.disToCellRight = 1.0
 
 		leadX = self.Pos[0]
 		leadY = self.Pos[1]
 		for cell in self.cells[:-1]:
 			if cell[0] == leadX:
 				#if cell[1] > leadY and ((cell[1] - leadY)/playingWinHieght < self.disToCellDown):
-				if cell[1] > leadY and ((cell[1] - leadY) < self.disToCellDown):
-					self.disToCellDown = (cell[1] - leadY)#/playingWinHieght
+				if cell[1] > leadY and ((cell[1] - leadY) < self.disToCellDown*playingWinHieght):
+					self.disToCellDown = (cell[1] - leadY)/playingWinHieght
 				#elif leadY > cell[1] and (leadY - cell[1])/playingWinHieght< self.disToCellUp:
-				elif leadY > cell[1] and (leadY - cell[1]) < self.disToCellUp:
-					self.disToCellUp = (leadY - cell[1])#/playingWinHieght
+				elif leadY > cell[1] and (leadY - cell[1]) < self.disToCellUp*playingWinHieght:
+					self.disToCellUp = (leadY - cell[1])/playingWinHieght
 			if cell[1] == leadY:
 				#if cell[0] > leadX and ((cell[0] - leadX)/playingWinWidth < self.disToCellRight):
-				if cell[0] > leadX and ((cell[0] - leadX)< self.disToCellRight):
-					self.disToCellRight = (cell[0] - leadX)#/playingWinWidth
+				if cell[0] > leadX and ((cell[0] - leadX)< self.disToCellRight*playingWinHieght):
+					self.disToCellRight = (cell[0] - leadX)/playingWinWidth
 				#elif leadX > cell[0] and (leadX - cell[0])'''/playingWinWidth''' < self.disToCellLeft:
-				elif leadX > cell[0] and (leadX - cell[0])< self.disToCellLeft:
-					self.disToCellLeft = (leadX - cell[0])#/playingWinWidth
+				elif leadX > cell[0] and (leadX - cell[0])< self.disToCellLeft*playingWinHieght:
+					self.disToCellLeft = (leadX - cell[0])/playingWinWidth
+
+		l = len(self.cells)
+		if l > 1:
+			self.disToLastCellX = (self.cells[0][0] - leadX)/playingWinWidth
+			self.disToLastCellY = (self.cells[0][1] - leadY)/playingWinHieght
+
+		if l > 2:
+			midCell = int(l/2)
+			self.disToMidCellX = (self.cells[midCell][0] - leadX)/playingWinWidth
+			self.disToMidCellY = (self.cells[midCell][1] - leadY)/playingWinHieght
+
+
 	
 	def get_name(self):
 		name = ""
@@ -443,26 +495,57 @@ class snake():
 
 	def calc_output(self):
 		inputs = []
-		inputs.append(self.disToWallDown/playingWinHieght)	#	To scale the result to one and the input will be bigger when the snake is closer to the wall
-		inputs.append(self.disToWallLeft/playingWinWidth)	#
-		inputs.append(self.disToWallUp/playingWinHieght)	#
-		inputs.append(self.disToWallRight/playingWinWidth)	#
-		if self.disToAppleX>0:								#	To scale the result to one and the input will be bigger when the snake is far away from the apple
-			inputs.append(1)								#
-		elif self.disToAppleX<0:							#
-			inputs.append(-1)								#
-		else:												#
-			inputs.append(0)								#							
-		if self.disToAppleY>0:								#
-			inputs.append(1)								#
-		elif self.disToAppleY<0:							#
-			inputs.append(-1)								#
-		else:												#
-			inputs.append(0)								#
-		inputs.append((playingWinHieght-self.disToCellUp)/playingWinHieght)		#	To scale the result to one and the input will be bigger when the snake is closer to another cell
-		inputs.append((playingWinWidth-self.disToCellRight)/playingWinWidth)	#
-		inputs.append((playingWinHieght-self.disToCellDown)/playingWinHieght)	#
-		inputs.append((playingWinWidth-self.disToCellLeft)/playingWinWidth)		#
+
+		# inputs.append(self.disToWallDown/playingWinHieght)	#	To scale the result to one and the input will be bigger when the snake is closer to the wall
+		# inputs.append(self.disToWallLeft/playingWinWidth)	#
+		# inputs.append(self.disToWallUp/playingWinHieght)	#
+		# inputs.append(self.disToWallRight/playingWinWidth)	#
+
+		inputs.append(self.disToWallDown)	#	To scale the result to one and the input will be bigger when the snake is closer to the wall
+		inputs.append(self.disToWallRight)	#
+		inputs.append(self.disToWallUp)	#
+		inputs.append(self.disToWallLeft)	#
+
+		if binaryDistToApple:
+			# Binary distance to apple
+			if self.disToAppleX>0:								#	To scale the result to one and the input will be bigger when the snake is far away from the apple
+				inputs.append(1)								#
+			elif self.disToAppleX<0:							#
+				inputs.append(-1)								#
+			else:												#
+				inputs.append(0)								#							
+			if self.disToAppleY>0:								#
+				inputs.append(1)								#
+			elif self.disToAppleY<0:							#
+				inputs.append(-1)								#
+			else:												#
+				inputs.append(0)								#
+		else:
+			inputs.append(self.disToAppleX)
+			inputs.append(self.disToAppleY)
+
+		
+		# inputs.append((playingWinHieght-self.disToCellUp)/playingWinHieght)		#	To scale the result to one and the input will be bigger when the snake is closer to another cell
+		# inputs.append((playingWinWidth-self.disToCellRight)/playingWinWidth)	#
+		# inputs.append((playingWinHieght-self.disToCellDown)/playingWinHieght)	#
+		# inputs.append((playingWinWidth-self.disToCellLeft)/playingWinWidth)		#
+
+		# inputs.append((playingWinHieght/playingWinHieght-self.disToCellUp))		#	To scale the result to one and the input will be bigger when the snake is closer to another cell
+		# inputs.append((playingWinWidth/playingWinWidth-self.disToCellRight))	#
+		# inputs.append((playingWinHieght/playingWinHieght-self.disToCellDown))	#
+		# inputs.append((playingWinWidth/playingWinWidth-self.disToCellLeft))		#
+		
+		inputs.append((self.disToCellUp))		#	To scale the result to one and the input will be bigger when the snake is closer to another cell
+		inputs.append((self.disToCellRight))	#
+		inputs.append((self.disToCellDown))		#
+		inputs.append((self.disToCellLeft))		#
+
+		
+		if useMidAndLastCells:
+			inputs.append((self.disToMidCellX))			#	To scale the result to one and the input will be bigger when the snake is closer to another cell
+			inputs.append((self.disToMidCellY))			#
+			inputs.append((self.disToLastCellX))		#
+			inputs.append((self.disToLastCellX))		#
 
 		newMove = [0, 0, 0, 0]
 		#return self.brain.calc_output(inputs)
@@ -534,19 +617,20 @@ class snake():
 		if self.fitness < 0:
 			self.fitness = 0
 		if self.deadReason == "Wall-Crush":
-			self.fitness = self.fitness/15
+			self.fitness = self.fitness/25
 		elif self.deadReason == "self-Crush":
-			self.fitness = self.fitness/15
+			self.fitness = self.fitness/25
 		elif self.deadReason == "Position-Repeting":
-			self.fitness = self.fitness/10
+			self.fitness = self.fitness/40
 		elif self.deadReason == "No-Apple":
-			self.fitness = self.fitness/2
+			self.fitness = self.fitness/10
 
-		self.lastNfitToCount.append(self.fitness)
+		self.lastNfitToCount = np.append(self.lastNfitToCount, self.fitness)
 		self.lastNfitToCount = self.lastNfitToCount[1:]
 		self.fitnessSum=0
 		for i in range(self.numFitToCount):
-			self.fitnessSum = self.fitnessSum + (i+1)*(i+1)*self.lastNfitToCount[i]
+			# self.fitnessSum = self.fitnessSum + (i+1)*(i+1)*self.lastNfitToCount[i]
+			self.fitnessSum = self.fitnessSum + self.lastNfitToCount[-1*self.numFitToCount+i]*((i+1)*(i+1))
 		self.fitnessSum = self.fitnessSum/((self.numFitToCount*(self.numFitToCount+1)*(2*self.numFitToCount+1))/6)
 
 
@@ -556,6 +640,8 @@ class snake():
 		self.Pos = [self.Pos[0] + self.XSpeed, self.Pos[1]+self.YSpeed]
 		self.cells.append(self.Pos)
 		self.cells = self.cells[max(0,len(self.cells)-self.length):]
+		self.breviousCellPos.append(self.nextDir)
+		self.breviousCellPos = self.breviousCellPos[max(0,len(self.breviousCellPos)-self.length):]
 		self.canMove = True
 		self.check_collision()
 		globals()["applesToshow"][self.score] = 1
@@ -567,16 +653,112 @@ class snake():
 			self.self_kill("No-Apple")
 		#	print(self.Pos)
 
+	
+	def calc_head_drawing_info(self, pos):
+		# Define the positions of the face elements
+		eps = 1e-2
+		if self.dir=="Up":
+			xPoints = [0, 0, 0.3, 0.7, 1-eps, 1-eps]
+			yPoints = [1-eps, 0.5, 0, 0, 0.5, 1-eps]
+			eyes_relative_pos = [[0.3, 0.7], [0.7, 0.7]]
+			nosePosRelative = [[0.4, 0.3], [0.6, 0.3]]
+			
+		if self.dir=="Down":
+			xPoints = [0, 0, 0.3, 0.7, 1-eps, 1-eps]
+			yPoints = [0, 0.5, 1-eps, 1-eps, 0.5, 0]
+			eyes_relative_pos = [[0.3, 0.3], [0.7, 0.3]]
+			nosePosRelative = [[0.4, 0.7], [0.6, 0.7]]
+			
+		if self.dir=="Right":
+			xPoints = [0, 0, 0.5, 1-eps, 1-eps, 0.5]
+			yPoints = [1-eps, 0, 0, 0.3, 0.7, 1-eps]
+			eyes_relative_pos = [[0.3, 0.3], [0.3, 0.7]]
+			nosePosRelative = [[0.7, 0.4], [0.7, 0.6]]
+			
+		if self.dir=="Left":
+			xPoints = [0, 0, 0.5, 1-eps, 1-eps, 0.5]
+			yPoints = [0.7, 0.3, 0, 0, 1-eps, 1-eps]
+			eyes_relative_pos = [[0.7, 0.3], [0.7, 0.7]]
+			nosePosRelative = [[0.3, 0.4], [0.3, 0.6]]
+
+		xPointsFixed_size = [int(x*blockSize) for x in xPoints]
+		yPointsFixed_size = [int(y*blockSize) for y in yPoints]
+		xPointsInPos = [x+playingWinPos+pos[0] for x in xPointsFixed_size]
+		yPointsInPos = [y+playingWinPos+pos[1] for y in yPointsFixed_size]
+		# inside_ration = (blockSize-2)/blockSize
+		# # To calculate a 1 pixel smaller polygon for the inside
+		# inside_xPoints = [int(x*inside_ration)+playingWinPos+pos[0]+1 for x in xPointsFixed_size]
+		# inside_yPoints = [int(y*inside_ration)+playingWinPos+pos[1]+1 for y in yPointsFixed_size]
+		points = list(zip(xPointsInPos, yPointsInPos))
+		# inside_points = list(zip(inside_xPoints, inside_yPoints))
+		
+		
+		eyesPos = [[int(x[0]*blockSize)+playingWinPos+pos[0], int(x[1]*blockSize)+playingWinPos+pos[1]] for x in eyes_relative_pos]
+		nosePos = [[int(x[0]*blockSize)+playingWinPos+pos[0], int(x[1]*blockSize)+playingWinPos+pos[1]] for x in nosePosRelative]
+		return points, eyesPos, nosePos
 
 
+	def calc_tail_drawing_info(self, pos):
+		eps = 1e-2
+		if self.breviousCellPos[1]=="Up":
+			xPoints = [0, 0.25, 0.5, 0.75, 1-eps]
+			yPoints = [0, 0.8, 1-eps, 0.8, 0]
+			
+		if self.breviousCellPos[1]=="Down":
+			xPoints = [0, 0.25, 0.5, 0.75, 1-eps]
+			yPoints = [1-eps, 0.2, 0, 0.2, 1-eps]
+			
+		if self.breviousCellPos[1]=="Right":
+			xPoints = [1-eps, 0.2, 0, 0.2, 1-eps]
+			yPoints = [0, 0.25, 0.5, 0.75, 1-eps]
+			
+		if self.breviousCellPos[1]=="Left":
+			xPoints = [0, 0.8, 1-eps, 0.8, 0]
+			yPoints = [0, 0.25, 0.5, 0.75, 1-eps]
+			
+		xPointsFixedSize = [int(x*blockSize) for x in xPoints]
+		yPointsFixedSize = [int(y*blockSize) for y in yPoints]
+		xPointsInPos = [x+playingWinPos+pos[0] for x in xPointsFixedSize]
+		yPointsInPos = [y+playingWinPos+pos[1] for y in yPointsFixedSize]
+		# inside_ration = (blockSize-2)/blockSize
+		# # To calculate a 1 pixel smaller polygon for the inside
+		# inside_xPoints = [int(x*inside_ration)+playingWinPos+pos[0]+1 for x in xPointsFixed_size]
+		# inside_yPoints = [int(y*inside_ration)+playingWinPos+pos[1]+1 for y in yPointsFixed_size]
 
+		points = list(zip(xPointsInPos, yPointsInPos))
+		# inside_points = list(zip(inside_xPoints, inside_yPoints))
+		
+		return points
 
 	def draw(self):
 		if not self.show or not self.alive:
 			return
-		for c in self.cells:
-			rect([playingWinPos+c[0], playingWinPos+ c[1], blockSize, blockSize], black)
-			rect([playingWinPos+c[0]+1, playingWinPos+ c[1]+1, blockSize-2, blockSize-2], self.color)
+		for c in self.cells[1:-1]:
+			rect([playingWinPos+c[0], playingWinPos+ c[1], blockSize, blockSize], self.color)
+			rect([playingWinPos+c[0], playingWinPos+ c[1], blockSize, blockSize], black, width = cellEdgeWidth)
+			# rect([playingWinPos+c[0]+1, playingWinPos+ c[1]+1, blockSize-2, blockSize-2], self.color, width=5)
+
+		points, eyesPos, nosePosition = self.calc_head_drawing_info(self.cells[-1])
+		pygame.draw.polygon(gameDisplay, self.color, points)
+		pygame.draw.polygon(gameDisplay, black, points, cellEdgeWidth)
+		
+		# Draw the eyes
+		circle(eyesPos[0], white, eyesWhiteSize)
+		circle(eyesPos[1], white, eyesWhiteSize)
+		circle(eyesPos[0], black, eyesBlackSize)
+		circle(eyesPos[1], black, eyesBlackSize)
+		
+		circle(nosePosition[0], black, noseSize, width = cellEdgeWidth+1)
+		circle(nosePosition[1], black, noseSize, width = cellEdgeWidth+1)
+
+		# Draw the mouth as an arc
+		# pygame.draw.arc(gameDisplay, black, mouthArcInfo[0], mouthArcInfo[1], mouthArcInfo[2], mouthArcInfo[3])
+		
+		# Draw tail
+		if len(self.cells)>1:
+			tailPoints = self.calc_tail_drawing_info(self.cells[0])
+			pygame.draw.polygon(gameDisplay, self.color, tailPoints)
+			pygame.draw.polygon(gameDisplay, black, tailPoints, width=cellEdgeWidth)
 
 	def increase(self, num):
 		self.length+= num
@@ -594,24 +776,30 @@ class snake():
 
 		self.movesWithoutApple = self.movesWithoutApple+1
 
+		self.dir = self.nextDir
 		if not self.canMove:
 			return
 		while(not moved):
+			
 			if idx==0 and not self.YSpeed == mainSpeed:
 				self.XSpeed = 0
 				self.YSpeed = -mainSpeed
+				self.nextDir = "Up"
 				moved = True
 			elif idx==2 and not self.YSpeed == -mainSpeed:
 				self.XSpeed = 0
 				self.YSpeed = mainSpeed
+				self.nextDir = "Down"
 				moved = True
 			elif idx==1 and not self.XSpeed == -mainSpeed:
 				self.YSpeed = 0
 				self.XSpeed = mainSpeed
+				self.nextDir = "Right"
 				moved = True
 			elif idx==3 and not self.XSpeed == mainSpeed:
 				self.YSpeed = 0
 				self.XSpeed = -mainSpeed
+				self.nextDir = "Left"
 				moved = True
 			dirs[idx] = -5
 			idx = dirs.index(max(dirs))
@@ -684,7 +872,7 @@ def drow_control(snake):
 				for k in range(len(snake.brain.connections[i][j])):
 					lineColor= calc_connection_color(float(snake.brain.connections[i][j][k]*snake.brain.layers[i][k]))
 					#if j == 1:
-					#	print(lineColor)
+					#	print(lineColor)brain.layers
 					thikness = int(abs(4*snake.brain.connections[i][j][k]))
 					line([neural_pos[i][k], neural_pos[i+1][j]],lineColor, thikness)
 
@@ -720,13 +908,16 @@ def generate_new_snakes(numOfSnakesToRepreduce, snakes, fitnessArray):
 			if r < fitnessArray[j]:
 				break
 		s = snake(snakes[j])
+		# s.brain.imitate(initialImitateRate)
 		newSnakes.append(s)
 	for j in range(hugeImitationNum):
 		i = random.randrange(numOfSnakesToRepreduce)
 		newSnakes[i].brain.imitate(hugeImitationRate)
-		newSnakes[i].color=(random.randrange(256),random.randrange(256),random.randrange(256))
+		newSnakes[i].color=np.array([random.randrange(256),random.randrange(256),random.randrange(256)])
 		newSnakes[i].rootID = snakeRootID
 		newSnakes[i].get_name()
+		if newSnakes[i].color[1]>mapBackgroundColor[1]-10 and newSnakes[i].color[1]<mapBackgroundColor[1]+10 and newSnakes[i].color[2]>mapBackgroundColor[2]-10 and newSnakes[i].color[2]<mapBackgroundColor[2]+10:
+			newSnakes[i].color=np.array([random.randrange(256),random.randrange(256),random.randrange(256)])
 		globals()["snakeRootID"]+=1
 	return newSnakes
 
@@ -768,7 +959,7 @@ def calc_neuron_color(num):
 	if num>1:
 		num =1
 	if num > 0:
-		return(int(num*55),int(num*55),int(num*255))
+		return(int(num*55),int(num*255),int(num*55))
 	else:
 		num = -1*num
 		return(int(num*255),int(num*55),int(num*55))
@@ -788,7 +979,7 @@ def calc_connection_color(num):
 def init_display():
 	gameDisplay.fill(controlColor)
 	rect([playingWinPos-wallThikness,playingWinPos-wallThikness,playingWinWidth+2*wallThikness,playingWinHieght+2*wallThikness],wallColor)
-	rect([playingWinPos,playingWinPos,playingWinWidth,playingWinHieght],white)
+	rect([playingWinPos,playingWinPos,playingWinWidth,playingWinHieght],mapBackgroundColor)
 
 def rect(rList, color=red, width=0, surface=gameDisplay):
 	pygame.draw.rect(surface, color, rList, width)
@@ -877,21 +1068,21 @@ def event_handling():
 
 
 def game_update():
-	init_display()
+	# init_display()
 	globals()["applesToshow"] = [0 for i in range(maxApplesNum)]
 	for s in snakes:
 		s.update()
-	if showOne:
-		if snakes[idOfShownSnake].alive:
-			snakes[idOfShownSnake].draw()
-		else:
-			while(numOfDeadSnakes<genSize and (not snakes[idOfShownSnake].alive)):
-				globals()["idOfShownSnake"] = (globals()["idOfShownSnake"] + changeShowDir)%genSize
-				if globals()["idOfShownSnake"] < 0:
-					globals()["idOfShownSnake"] = genSize-1
-	else:
-		for s in snakes:
-			s.draw()
+	# if showOne:
+	# 	if snakes[idOfShownSnake].alive:
+	# 		snakes[idOfShownSnake].draw()
+	# 	else:
+	# 		while(numOfDeadSnakes<genSize and (not snakes[idOfShownSnake].alive)):
+	# 			globals()["idOfShownSnake"] = (globals()["idOfShownSnake"] + changeShowDir)%genSize
+	# 			if globals()["idOfShownSnake"] < 0:
+	# 				globals()["idOfShownSnake"] = genSize-1
+	# else:
+	# 	for s in snakes:
+	# 		s.draw()
 
 	globals()["numOfMoves"] +=1
 	if numOfMoves>genTestSteps:
@@ -899,6 +1090,37 @@ def game_update():
 			if s.alive:
 				s.self_kill("")
 		globals()["numOfDeadSnakes"] = genSize
+		
+	# if showOne:
+	# 	gameApples[snakes[idOfShownSnake].score].draw()
+	# else:
+	# 	for i in range(bestScore+1):
+	# 		if applesToshow[i] >0:
+	# 			gameApples[i].draw()
+	# s = snakes[idOfShownSnake]
+	# controlPanel.draw(s)
+	# pygame.display.update()
+
+
+def display_update():
+	init_display()
+	if showOne:
+		if snakes[idOfShownSnake].alive:
+			snakes[idOfShownSnake].draw()
+		# else:
+		# 	while(numOfDeadSnakes<genSize and (not snakes[idOfShownSnake].alive)):
+		# 		globals()["idOfShownSnake"] = (globals()["idOfShownSnake"] + changeShowDir)%genSize
+		# 		if globals()["idOfShownSnake"] < 0:
+		# 			globals()["idOfShownSnake"] = genSize-1
+	else:
+		for s in snakes:
+			s.draw()
+
+			
+	while(numOfDeadSnakes<genSize and (not snakes[idOfShownSnake].alive)):
+		globals()["idOfShownSnake"] = (globals()["idOfShownSnake"] + changeShowDir)%genSize
+		if globals()["idOfShownSnake"] < 0:
+			globals()["idOfShownSnake"] = genSize-1
 		
 	if showOne:
 		gameApples[snakes[idOfShownSnake].score].draw()
@@ -912,13 +1134,12 @@ def game_update():
 
 
 
-
-
 while not gameExit:
 	
 	event_handling()
 	if not gamePause:
-		game_update()	
+		game_update()
+	display_update()
 
 	clock.tick(FPS)
 	if numOfDeadSnakes>genSize-1:
